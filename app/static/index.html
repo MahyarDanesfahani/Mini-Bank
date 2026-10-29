@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#214c3c"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/static/icon.svg" type="image/svg+xml"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="صندوق‌من"><title>صندوق من | ورود و عضویت</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <aside class="story">
+      <a class="brand" href="/"><span class="brand-icon">ص</span><span>صندوق‌من<small>مدیریت همراه صندوق شما</small></span></a>
+      <div class="story-copy"><span class="eyebrow">با خیال راحت، کنار هم</span><h1>پس‌اندازهای کوچک،<br><em>اتفاق‌های بزرگ.</em></h1><p>همراهی شفاف و ساده برای مدیریت صندوق‌های خانوادگی و دوستانه.</p></div>
+      <div class="trust"><div class="trust-mark">✓</div><span>اطلاعات شما با امنیت نگهداری می‌شود</span></div>
+      <span class="decor decor-one"></span><span class="decor decor-two"></span>
+    </aside>
+    <section class="panel">
+      <div class="mobile-brand"><span class="brand-icon">ص</span> صندوق‌من</div>
+      <div class="intro"><span class="eyebrow" id="modeLabel">خوش آمدید</span><h2 id="title">ورود به حساب</h2><p id="subtitle">برای ادامه، وارد حساب کاربری‌تان شوید.</p></div>
+      <div class="tabs" role="tablist"><button class="tab active" id="loginTab" type="button">ورود</button><button class="tab" id="registerTab" type="button">ساخت حساب</button></div>
+      <div id="notice" class="notice" role="alert" hidden></div>
+      <form id="loginForm" class="form" novalidate>
+        <label>کد ملی<input type="text" name="national_code" placeholder="کد ملی ۱۰ رقمی" inputmode="numeric" autocomplete="username" pattern="[0-9۰-۹]{10}" maxlength="10" required dir="ltr"></label>
+        <label>گذرواژه<span class="password-wrap"><input type="password" name="password" placeholder="گذرواژه‌تان را وارد کنید" autocomplete="current-password" required><button class="peek" type="button" aria-label="نمایش گذرواژه">◉</button></span></label>
+        <div class="form-meta"><span></span><a href="#" id="forgot">گذرواژه را فراموش کرده‌اید؟</a></div>
+        <button class="submit" type="submit">ورود به حساب <span>←</span></button>
+      </form>
+      <form id="registerForm" class="form register-form" hidden novalidate>
+        <div class="form-grid">
+          <label class="span-2">نام و نام خانوادگی<input name="full_name" autocomplete="name" placeholder="مثلاً سارا محمدی" minlength="2" maxlength="120" required></label>
+          <label>ایمیل <span class="optional">اختیاری</span><input name="email" type="email" autocomplete="email" placeholder="name@example.com" dir="ltr"></label>
+          <label>شماره موبایل<input name="phone" type="tel" autocomplete="tel" placeholder="0912 123 4567" minlength="8" maxlength="32" required dir="ltr"></label>
+          <label>کد ملی<input name="national_code" inputmode="numeric" placeholder="۱۰ رقم" pattern="[0-9۰-۹]{10}" maxlength="10" required></label>
+          <label>تاریخ تولد (شمسی)<span class="jalali-date"><input name="birth_year" type="text" inputmode="numeric" placeholder="سال" maxlength="4" pattern="1[0-4][0-9]{2}" required><select name="birth_month" required><option value="">ماه</option><option value="1">فروردین</option><option value="2">اردیبهشت</option><option value="3">خرداد</option><option value="4">تیر</option><option value="5">مرداد</option><option value="6">شهریور</option><option value="7">مهر</option><option value="8">آبان</option><option value="9">آذر</option><option value="10">دی</option><option value="11">بهمن</option><option value="12">اسفند</option></select><input name="birth_day" type="text" inputmode="numeric" placeholder="روز" maxlength="2" pattern="[0-9۰-۹]{1,2}" required></span></label>
+          <label>جنسیت<select name="gender" required><option value="">انتخاب کنید</option><option value="female">زن</option><option value="male">مرد</option><option value="other">ترجیح می‌دهم نگویم</option></select></label>
+          <label>شغل<input name="occupation" placeholder="مثلاً کارمند" minlength="2" maxlength="120" required></label>
+          <label>کد پستی<input name="postal_code" inputmode="numeric" placeholder="۱۰ رقم" pattern="[0-9۰-۹]{10}" maxlength="10" required></label>
+          <label class="span-2">نشانی محل سکونت<textarea name="address" autocomplete="street-address" placeholder="استان، شهر، خیابان و پلاک" minlength="5" maxlength="1000" rows="2" required></textarea></label>
+          <label class="span-2">گذرواژه<span class="password-wrap"><input name="password" type="password" autocomplete="new-password" placeholder="حداقل ۱۰ نویسه" minlength="10" maxlength="128" required><button class="peek" type="button" aria-label="نمایش گذرواژه">◉</button></span></label>
+        </div>
+        <p class="privacy">با ساخت حساب، موافقت می‌کنید اطلاعات واردشده برای مدیریت حساب و عضویت در صندوق استفاده شود.</p>
+        <button class="submit" type="submit">ساخت حساب کاربری <span>←</span></button>
+      </form>
+      <div class="footnote"><span class="lock">▣</span> اطلاعات شما محرمانه باقی می‌ماند <span>·</span> <a href="/setup-owner">راه‌اندازی مدیر اولیه</a></div>
+    </section>
+  </main>
+  <script src="/static/app.js" defer></script><script src="/static/pwa.js" defer></script>
+</body>
+</html>
