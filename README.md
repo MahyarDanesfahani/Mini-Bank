@@ -186,3 +186,192 @@ docker compose up -d --build
 
 <div dir="rtl">ساخته‌شده برای مدیریت ساده‌تر، شفاف‌تر و منظم‌تر صندوق‌های گروهی.</div>
 
+
+---
+
+# Mini Bank
+
+A Persian, right-to-left, installable PWA for managing family, friends, and group Qard Hasanah funds.
+
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+
+## Overview
+
+Mini Bank makes it easier to create and operate community-based interest-free loan funds. Fund owners can create funds, manage members, generate a fixed random draw order, schedule monthly cycles, and track installment payments. Members can join open funds and view their loan and installment schedules.
+
+> **Current status:** This is an initial production-ready foundation. Real banking payments, SMS notifications, and audit-event logging are planned for future releases.
+
+## ✨ Features
+
+- Persian and RTL user interface for authentication and dashboard workflows
+- Installable Progressive Web App for mobile and desktop
+- Customer registration with national ID and personal information
+- One-time setup flow for creating the first fund owner
+- Fund creation with monthly share, capacity, start date, and payment grace period
+- Open-fund discovery with atomic capacity reservation
+- Member management for fund owners
+- Random draw order that becomes immutable after confirmation
+- Automatic generation of monthly cycles, recipients, and installments
+- Installment statuses: pending, paid, late, coordinated, and waived
+- Payment reference and note tracking
+- Membership history and late-installment statistics
+- Interactive OpenAPI documentation at <code>/docs</code>
+- SQLite for development and PostgreSQL, Docker, and Caddy for production
+
+## 🧱 Technology Stack
+
+| Area | Technology |
+|---|---|
+| Backend | Python, FastAPI, Uvicorn |
+| ORM and data | SQLAlchemy 2, SQLite, PostgreSQL |
+| Authentication | JWT, Bearer Token, Argon2 |
+| Frontend | HTML, CSS, vanilla JavaScript |
+| Installability | Web App Manifest, Service Worker, PWA |
+| Deployment | Docker Compose, Caddy, automatic HTTPS |
+
+## 📁 Project Structure
+
+~~~text
+mini_bank/
+├── app/
+│   ├── main.py, config.py, database.py
+│   ├── models.py, schemas.py, security.py
+│   ├── dependencies.py
+│   ├── routers/             # auth and funds
+│   └── static/              # UI and PWA assets
+├── data/                    # SQLite database in development
+├── compose.yaml             # app, PostgreSQL, and Caddy
+├── Dockerfile
+├── Caddyfile
+├── requirements.txt
+├── .env.example
+└── RELEASE_GUIDE_FA.md
+~~~
+
+## 🚀 Quick Start
+
+Requirements: Python 3.11+ and pip.
+
+### Windows
+
+~~~powershell
+git clone <YOUR_REPOSITORY_URL>
+cd mini_bank
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+py -m pip install -r requirements.txt
+Copy-Item .env.example .env
+py -m uvicorn app.main:app --reload
+~~~
+
+### Linux/macOS
+
+~~~bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
+python -m uvicorn app.main:app --reload
+~~~
+
+After starting the server:
+
+| URL | Purpose |
+|---|---|
+| <code>http://localhost:8000/</code> | Login and registration |
+| <code>http://localhost:8000/setup-owner</code> | Create the first owner |
+| <code>http://localhost:8000/dashboard</code> | User dashboard |
+| <code>http://localhost:8000/docs</code> | Swagger API documentation |
+| <code>http://localhost:8000/health</code> | Health check |
+
+The default SQLite database is created at <code>data/fund.db</code>. Change <code>DATABASE_URL</code> to use another database.
+
+## ⚙️ Environment Configuration
+
+Copy <code>.env.example</code> to <code>.env</code> and replace the secrets:
+
+~~~env
+APP_NAME=Mini Bank
+DATABASE_URL=sqlite:///./data/fund.db
+JWT_SECRET=replace-with-a-long-random-secret-at-least-32-characters
+JWT_EXPIRE_MINUTES=60
+OWNER_SETUP_KEY=replace-with-a-long-random-key-at-least-24-characters
+API_PREFIX=/api/v1
+APP_ENVIRONMENT=development
+CORS_ORIGINS=["http://localhost:8000"]
+~~~
+
+In <code>production</code>, the application rejects default secrets and wildcard CORS (<code>*</code>). Never commit <code>.env</code>.
+
+## 🔄 Fund Workflow
+
+1. Create the first owner at <code>/setup-owner</code>. The setup key must be sent in both the request body and the <code>X-Setup-Key</code> header.
+2. Users log in with their national ID and password to receive a Bearer token.
+3. The owner creates a fund and adds registered users.
+4. Users join draft funds while capacity is available.
+5. The owner runs the random draw; the order is stored permanently.
+6. The owner confirms the permanent draw order and starts the fund.
+7. Monthly cycles and installments are generated automatically, and the owner records their statuses.
+
+Amounts are stored as integers in the smallest currency unit. The default currency is <code>IRT</code>, displayed as toman. For a 10-member fund with a monthly share of 3,000,000 toman, the gross monthly amount is 30,000,000 and the recipient's net amount is 27,000,000.
+
+## 📚 API
+
+The API prefix is <code>/api/v1</code>. Protected user and owner routes require a Bearer token.
+
+| Group | Important routes |
+|---|---|
+| Authentication | <code>POST /auth/register</code> · <code>POST /auth/token</code> · <code>GET /auth/me</code> |
+| Setup | <code>POST /auth/setup-owner</code> |
+| Funds | <code>POST /funds</code> · <code>GET /funds</code> · <code>GET /funds/open</code> |
+| Membership | <code>POST /funds/{id}/join</code> · <code>POST /funds/{id}/members</code> |
+| Draw | <code>POST /funds/{id}/draw</code> · <code>GET /funds/{id}/draw</code> |
+| Cycles and installments | <code>POST /funds/{id}/start</code> · <code>GET /funds/{id}/cycles</code> · <code>GET /funds/{id}/installments</code> |
+| Installment updates | <code>PATCH /funds/{id}/installments/{installment_id}</code> |
+
+See the complete schemas and responses in [Swagger UI](http://localhost:8000/docs).
+
+## 🐳 Docker Deployment
+
+Set <code>POSTGRES_PASSWORD</code>, <code>DOMAIN</code>, <code>JWT_SECRET</code>, <code>OWNER_SETUP_KEY</code>, and <code>CORS_ORIGINS</code> in <code>.env</code>, then run:
+
+~~~bash
+docker compose up -d --build
+~~~
+
+The stack includes:
+
+- <code>app</code>: FastAPI on internal port 8000
+- <code>db</code>: PostgreSQL 16 with persistent storage
+- <code>proxy</code>: Caddy reverse proxy with HTTPS
+
+For DNS, HTTPS, backup, and APK preparation, see [RELEASE_GUIDE_FA.md](RELEASE_GUIDE_FA.md).
+
+## 🔐 Security and Limitations
+
+- Passwords are hashed with Argon2 and never stored in plaintext.
+- Keep JWT and setup secrets in a secret manager or a secure <code>.env</code> file.
+- Rotate or remove the setup key after creating the owner.
+- Use only real application origins in <code>CORS_ORIGINS</code> in production.
+- This version records payment status but does not process real banking transactions.
+
+## 🧭 Roadmap
+
+- [ ] Payment gateway integration and transaction reconciliation
+- [ ] SMS and push notifications with a background queue
+- [ ] Audit events and management reports
+- [ ] Database migrations with Alembic
+- [ ] Automated API and end-to-end tests
+- [ ] Production backup and monitoring
+
+## Contributing
+
+Open an Issue for bug reports or feature requests. For code changes, create a separate branch, add relevant tests, and submit a Pull Request.
+
+## License
+
+No open-source license has been selected yet. Add a LICENSE file with the desired license before public distribution.
+
+<div dir="rtl">Built for simpler, clearer, and more organized group fund management.</div>
+
+
